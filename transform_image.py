@@ -4,8 +4,8 @@ import boto3
 from PIL import Image
 
 # Configuración de AWS
-aws_access_key_id = 'AKIAQR6H7VOXH6QUBJVO'
-aws_secret_access_key = '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'
+aws_access_key_id = ''
+aws_secret_access_key = ''
 region_name = 'us-east-2'
 
 # Nombres de los buckets
