@@ -6,7 +6,7 @@ on:
       - dev
 jobs:
   inputs:
-    PROJECT_NAME = aws-thumbnail-service-2
+    PROJECT_NAME = 'aws-thumbnail-service-2'
     
   aws_cdk:
     name: AWS CDK
