@@ -16,11 +16,7 @@ def main():
     if not (aws_access_key_id and aws_secret_access_key):
         print("No AWS credentials were provided. Be sure to configure environment variables...")
         return
-
-    # Create a S3 client
-    s3 = boto3.client("s3", aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
     
-
     # Initialize S3 client
     s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key, region_name=aws_region)
 
