@@ -19,5 +19,5 @@ jobs:
 
       - name: Login to AWS ECR
         run: |
-          echo "My Docker Hub Password is ${{ secrets.AWS_ACCOUNT_ID }}"
+          echo "My AWS AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}"
 
