@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create ECR Stack with CloudFormation
-        run: aws cloudformation create-stack --stack-name $STACK-repository --template-body file://ecr-stack.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=Repository,ParameterValue=$REPOSITORY -parameters ParameterKey=ImageTag,ParameterValue=$IMAGE_TAG
+        run: aws cloudformation create-stack --stack-name $STACK-repository --template-body file://ecr-stack.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=Repository,ParameterValue=$REPOSITORY --parameters ParameterKey=ImageTag,ParameterValue=$IMAGE_TAG
         working-directory: ./Infrastructure
 
       - name: Wait for ECR Stack to Complete with CloudFormation
