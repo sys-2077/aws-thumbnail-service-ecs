@@ -3,31 +3,20 @@ name: Stori Thumbnail Images
 on:
   push:
     branches:
-      - main
-
-inputs:
-  _stack:
-    description: 'stori-thumbnail'
-    required: true
-    default: 'dev'
-  _repository:
-    description: 'The name of the ECR repository to deploy to'
-    required: true
-    default: 'thumbnail-repository'
-  _imageTag:
-    description: 'The image tag to deploy to Fargate'
-    required: true
-    default: 'latest'
+      - dev
 
 jobs:
   build-and-deploy:
-    runs-on: python:3.8
+    runs-on: ubuntu-latest
     env:
-      STACK: ${{ github.event.inputs.stack }}
+      STACK: 'stori-thumbnail'
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      REPOSITORY: 'thumbnail-repository'
+      IMAGE_TAG: 'latest'
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -37,8 +26,8 @@ jobs:
               --stack-name $STACK-repository \
               --template-body file://ecr-stack.yaml \
               --capabilities CAPABILITY_NAMED_IAM \
-              --parameters ParameterKey=Repository,ParameterValue=${{ github.event.inputs._repository }},\
-                ParameterKey=ImageTag,ParameterValue=${{ github.event.inputs._imageTag }}
+              --parameters ParameterKey=Repository,ParameterValue=$REPOSITORY,\
+                ParameterKey=ImageTag,ParameterValue=$IMAGE_TAG
         working-directory: ./Infrastructure
 
       - name: Wait for ECR Stack to Complete with CloudFormation
@@ -54,7 +43,7 @@ jobs:
       - name: Build & Push Docker Image
         run: docker buildx build \
               --platform linux/amd64,linux/arm64 \
-              --push -t $AWS_ACCESS_KEY_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$_imageTag \
+              --push -t $AWS_ACCESS_KEY_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$IMAGE_TAG \
               -f Dockerfile .
         working-directory: ./Docker
 
@@ -62,5 +51,5 @@ jobs:
         run: aws ecr describe-images \
               --region $AWS_DEFAULT_REGION \
               --repository-name $STACK-repository \
-              --image-ids $AWS_ACCESS_KEY_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$_imageTag
+              --image-ids $AWS_ACCESS_KEY_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$IMAGE_TAG
         working-directory: ./Docker
