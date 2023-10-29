@@ -41,7 +41,7 @@ jobs:
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 \
             --push -t ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/aws-thumbnail-service-2:latest \
-            --build-arg AWS_ACCESS_KEY_ID:=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} \
             --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} \
