@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for the Stori Challenge
+
+Parameters:
+  Repository:
+    Type: String
+    Description: Name of the repository
+  ImageTag:
+    Type: String
+    Description: Tag of the Docker image
+
+Resources:
+
+  MyECRRepository: # 1 ECR repository for the Docker image
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref ${Repository}:${ImageTag}
+      ImageTagMutability: MUTABLE
+      ImageScanningConfiguration:
+        ScanOnPush: true
+
+Outputs:
+  ECRRepository:
+    Description: ECR Repository
+    Value: !Ref MyECRRepository
+    Export:
+      Name: !Sub ${AWS::StackName}-ECRRepository
