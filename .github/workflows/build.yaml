@@ -36,4 +36,5 @@ jobs:
       # Describe ECR Images
       - name: Describe ECR Images
         run: |
-          aws ecr describe-images --repository-name aws-thumbnail-service-2 --region us-east-1 --image-ids ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/aws-thumbnail-service-2:latest
+          aws ecr describe-images --repository-name aws-thumbnail-service-2 --region us-east-1 --image-ids imageDigest=$(aws ecr list-images --repository-name aws-thumbnail-service-2 --region us-east-1 --query 'imageIds[?imageTag==`latest`]' --output json | jq -r '.[0].imageDigest')
+
