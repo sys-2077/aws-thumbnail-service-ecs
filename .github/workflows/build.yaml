@@ -10,16 +10,11 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    runs-on: ubuntu-latest
-    parameters:
-      ERC_REPOSITORY:
-        description: 'ERC Repository'
-        type: string
-        default: aws-thumbnail-service-2    
+    runs-on: ubuntu-latest   
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      # Configure AWS credentials
+      # Configure AWS credentials 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
