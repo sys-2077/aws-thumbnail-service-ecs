@@ -25,12 +25,15 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+      # Create Builder
       - name: Create Builder
         run: |
           docker buildx create --use
+      # Build and Push Image
       - name: Build and Push Image
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 --push -t 176714254348.dkr.ecr.us-east-1.amazonaws.com/aws-thumbnail-service-2:latest -f ./Docker/Dockerfile .
+      # Describe ECR Images
       - name: Describe ECR Images
         run: |
-          aws ecr describe-images --repository-name aws-thumbnail-service-2 --region us-east-1 --image-ids ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/aws-service-thumbnail
+          aws ecr describe-images --repository-name aws-thumbnail-service-2 --region us-east-1 --image-ids ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/aws-thumbnail-service-2:latest
