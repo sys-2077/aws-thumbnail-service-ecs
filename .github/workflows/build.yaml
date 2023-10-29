@@ -5,8 +5,8 @@ on:
     branches:
       - dev
 jobs:
-  inputs:
-    PROJECT_NAME = 'aws-thumbnail-service-2'
+  env:
+    PROJECT_NAME: aws-thumbnail-service-2
     
   aws_cdk:
     name: AWS CDK
