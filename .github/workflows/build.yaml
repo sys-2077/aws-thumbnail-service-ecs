@@ -24,8 +24,3 @@ jobs:
           role-to-assume: arn:aws:iam::176714254348:role/OIDCGitHubRole-PR
           aws-region: us-east-1
 
-      - name: Login to Amazon ECR Private
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-
