@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - dev
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   build-and-deploy:
@@ -15,8 +19,5 @@ jobs:
 
       - name: Login to AWS ECR
         run: |
-          echo $AWS_ACCOUNT_ID
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          aws ecr get-login-password --region $ | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
