@@ -12,6 +12,8 @@ def main():
     output_bucket_name = os.environ.get("OUTPUT_BUCKET_NAME")
     # Region name
     aws_region = os.environ.get("AWS_REGION")
+    print (">>>>>> " + input_bucket_name)
+    print (">>>>>> " + output_bucket_name)
 
     if not (aws_access_key_id and aws_secret_access_key):
         print("No AWS credentials were provided. Be sure to configure environment variables...")
