@@ -35,9 +35,5 @@ jobs:
           parameter-overrides: |
             RepositoryName=$REPOSITORY
 
-      - name: Wait for ECR Stack to Complete with CloudFormation
-        uses: aws-actions/aws-cloudformation-wait-for-stack@v3
-        with:
-          stack-name: $STACK-repository
-          region: $AWS_DEFAULT_REGION
+
 
