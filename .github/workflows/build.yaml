@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       STACK: 'stori-thumbnail'
-      AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
-      AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-      AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       REPOSITORY: 'thumbnail-repository'
       IMAGE_TAG: 'latest'
 
@@ -25,4 +25,5 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
         with:
           mask-password: true
+
 
