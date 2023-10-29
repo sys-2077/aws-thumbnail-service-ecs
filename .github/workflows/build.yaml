@@ -25,24 +25,12 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-      # Setup Buildx
-      - name: Buildx Image
-        uses: docker/setup-buildx-action@v3
-      # Docker Tags
-      - name: Docker Tags
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/aws-thumbnail-service:latest
-          tags: latest
-      # Build and push
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/aws-thumbnail-service:latest
-          build-args: |
-            AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
-            AWS_REGION=us-east-1
-          context: .
-          file: ./Docker/Dockerfile
-
+      - name: Create Builder
+        run: |
+          docker buildx create --use
+      - name: Build and Push Image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/aws-thumbnail-service:latest -f ./Docker/Dockerfile .
+      - name: Describe ECR Images
+        run: |
+          aws ecr describe-images --repository-name aws-thumbnail-service-1 --region us-east-1 --image-ids ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/aws-service-thumbnail
