@@ -13,11 +13,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
         with:
           node-version: "16"
       - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/gh-actions-role
           aws-region: us-east-1
