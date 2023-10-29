@@ -1,15 +1,10 @@
-# Utilizamos una imagen base con Python
+# Use a base image with python
 FROM python:3.8
-
-# Instalamos las bibliotecas necesarias
+# Install the necessary libraries
 RUN pip install boto3 pillow
-
-# Copiamos el script de Python y el archivo de configuración (si es necesario) al contenedor
+# Copy the Python script and the configuration file to the container
 COPY transform_image.py /app/
-# COPY config.json /app/ (si es necesario)
-
-# Establecemos el directorio de trabajo
+# Establish the work board
 WORKDIR /app
-
-# Comando para ejecutar el script de transformación
+# Excute the Python script
 CMD ["python", "transform_image.py"]

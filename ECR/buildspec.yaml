@@ -4,16 +4,21 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION) # Esto obtiene las credenciales de ECR
-
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t my-docker-image -f docker/Dockerfile .
-
+      - docker buildx create --use --name mybuilder --node mybuilder
+      - docker buildx build --file Dockerfile --tag my-docker-image --build-arg AWS_ACCESS_KEY_ID=$AWSAccessKeyId --build-arg AWS_SECRET_ACCESS_KEY=$AWSSecretAccessKey .
   post_build:
     commands:
       - echo Tagging the Docker image for ECR...
-      - docker tag my-docker-image $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/my-ecr-repo:latest
+      - docker tag my-docker-image $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/!Ref MyECRRepository:latest
       - echo Pushing the Docker image to Amazon ECR...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/my-ecr-repo:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/!Ref MyECRRepository:latest
+artifacts:
+  files: Dockerfile
+
+cache:
+  paths:
+    - "/root/.docker/cli-plugins/docker-buildx"
