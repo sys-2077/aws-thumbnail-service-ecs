@@ -8,20 +8,12 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      STACK: 'stori-thumbnail'
-      AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
-      AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-      AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
-      REPOSITORY: 'thumbnail-repository'
-      IMAGE_TAG: 'latest'
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
+      - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::176714254348:role/GithubActionRole-PR
