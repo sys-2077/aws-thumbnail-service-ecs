@@ -19,5 +19,5 @@ jobs:
 
       - name: Login to AWS ECR
         run: |
-          aws ecr get-login-password --region $ | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+          echo "My Docker Hub Password is ${{ secrets.AWS_ACCOUNT_ID }}"
 
