@@ -6,10 +6,16 @@ on:
       - dev
 jobs:
   aws_cdk:
+    name: AWS CDK
     permissions:
       id-token: write
       contents: read
     runs-on: ubuntu-latest
+    inputs:
+      ERC_REPOSITORY:
+        description: 'ERC Repository'
+        type: string
+        default: aws-thumbnail-service-2    
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -24,7 +30,7 @@ jobs:
       - name: Connect to ECS
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com
       # Create ERC Repository 
 
       # 
@@ -38,9 +44,12 @@ jobs:
       # Build and Push Image
       - name: Build and Push Image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 --push -t 176714254348.dkr.ecr.us-east-1.amazonaws.com/aws-thumbnail-service-2:latest --build-arg AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} --build-arg AWS_SECRET_ACCESS_KEY:=${{ secrets.AWS_SECRET_ACCESS_KEY }} --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} --build-arg OUTPUT_BUCKET_NAME=${{ secrets.OUTPUT_BUCKET_NAME }} -f ./Docker/Dockerfile .
+          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/aws-thumbnail-service-2:latest \
+            --build-arg AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} --build-arg AWS_SECRET_ACCESS_KEY:=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} --build-arg OUTPUT_BUCKET_NAME=${{ secrets.OUTPUT_BUCKET_NAME }} -f ./Docker/Dockerfile .
       # Describe ECR Images
       - name: Describe ECR Images
         run: |
-          aws ecr describe-images --repository-name aws-thumbnail-service-2 --region us-east-1 --image-ids imageDigest=$(aws ecr list-images --repository-name aws-thumbnail-service-2 --region us-east-1 --query 'imageIds[?imageTag==`latest`]' --output json | jq -r '.[0].imageDigest')
+          aws ecr describe-images --repository-name aws-thumbnail-service-2 --region ${{secrets.AWS_REGION}} --image-ids imageDigest=$(aws ecr list-images \
+          --repository-name aws-thumbnail-service-2 --region ${{secrets.AWS_REGION}} --query 'imageIds[?imageTag==`latest`]' --output json | jq -r '.[0].imageDigest')
 
