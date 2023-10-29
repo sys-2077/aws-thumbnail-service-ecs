@@ -21,16 +21,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Login to AWS ECR
+        run: |
+          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
       - name: Create ECR Stack with CloudFormation
         run: aws cloudformation create-stack --stack-name $STACK-repository --template-body file://ecr-stack.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=Repository,ParameterValue=$REPOSITORY ParameterKey=ImageTag,ParameterValue=$IMAGE_TAG
         working-directory: ./Infrastructure
 
       - name: Wait for ECR Stack to Complete with CloudFormation
         run: aws cloudformation wait stack-create-complete --stack-name $STACK-repository
-
-      - name: Login to AWS ECR
-        run: |
-          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
       - name: Create Builder
         run: docker buildx create --use
