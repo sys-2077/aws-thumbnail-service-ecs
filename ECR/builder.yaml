@@ -117,7 +117,6 @@ Resources:
                 Owner: sys-2077
                 Repo: sys-2077-aws-thumbnail-service-1
                 Branch: main
-                OAuthToken: !Ref GitHubAccessToken
               RunOrder: 1
         - Name: Build
           Actions:
