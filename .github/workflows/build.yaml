@@ -39,9 +39,13 @@ jobs:
       # Build and Push Image
       - name: Build and Push Image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/aws-thumbnail-service-2:latest \
-            --build-arg AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} --build-arg AWS_SECRET_ACCESS_KEY:=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-            --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} --build-arg OUTPUT_BUCKET_NAME=${{ secrets.OUTPUT_BUCKET_NAME }} -f ./Docker/Dockerfile .
+          docker buildx build --platform linux/amd64,linux/arm64 \
+            --push -t ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/aws-thumbnail-service-2:latest \
+            --build-arg AWS_ACCESS_KEY_ID:=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} \
+            --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} \
+            --build-arg AWS_REGION=${{ secrets.AWS_REGION }} -f ./Docker/Dockerfile .
       # Describe ECR Images
       - name: Describe ECR Images
         run: |

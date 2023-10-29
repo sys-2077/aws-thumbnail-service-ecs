@@ -11,7 +11,7 @@ def main():
     input_bucket_name = os.environ.get("INPUT_BUCKET_NAME")
     output_bucket_name = os.environ.get("OUTPUT_BUCKET_NAME")
     # Region name
-    region_name = 'us-east-1'
+    aws_region = os.environ.get("AWS_REGION")
 
     if not (aws_access_key_id and aws_secret_access_key):
         print("No AWS credentials were provided. Be sure to configure environment variables...")
@@ -22,7 +22,7 @@ def main():
     
 
     # Initialize S3 client
-    s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+    s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key, region_name=aws_region)
 
     # We get the list of objects in the entrance bucket
     objects = s3.list_objects(Bucket=input_bucket_name)
