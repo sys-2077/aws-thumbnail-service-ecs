@@ -22,23 +22,49 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Login to AWS ECR
-        run: |
-          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Create ECR Stack with CloudFormation
-        run: aws cloudformation create-stack --stack-name $STACK-repository --template-body file://ecr-stack.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=Repository,ParameterValue=$REPOSITORY ParameterKey=ImageTag,ParameterValue=$IMAGE_TAG
-        working-directory: ./Infrastructure
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          stack-name: $STACK-repository
+          template: ./Infrastructure/erc-stack.yaml
+          capabilities: CAPABILITY_NAMED_IAM
+          region: $AWS_DEFAULT_REGION
+          wait-until-deployed: true
+          parameter-overrides: |
+            RepositoryName=$REPOSITORY
 
       - name: Wait for ECR Stack to Complete with CloudFormation
-        run: aws cloudformation wait stack-create-complete --stack-name $STACK-repository
+        uses: aws-actions/aws-cloudformation-wait-for-stack@v3
+        with:
+          stack-name: $STACK-repository
+          region: $AWS_DEFAULT_REGION
 
       - name: Create Builder
-        run: docker buildx create --use
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: image=moby/buildkit:latest
 
       - name: Build & Push Docker Image
-        run: docker buildx build --platform linux/amd64,linux/arm64 --push -t $AWS_ACCESS_KEY_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$IMAGE_TAG -f Dockerfile .
-        working-directory: ./Docker
+        uses: docker/build-push-action@v3
+        with:
+          context: ./Docker
+          file: ./Docker/Dockerfile
+          push: true
+          tags: $AWS_ACCESS_KEY_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$IMAGE_TAG
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID
+            AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+            AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+            AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+            STACK=$STACK
+            REPOSITORY=$REPOSITORY
+            IMAGE_TAG=$IMAGE_TAG
 
       - name: Describe ECR Image
-        run: aws ecr describe-images --region $AWS_DEFAULT_REGION --repository-name $STACK-repository --image-ids $AWS_ACCESS_KEY_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$IMAGE_TAG
-        working-directory: ./Docker
+        uses: aws-actions/amazon-ecr-describe-image@v1
+        with:
+          image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STACK-image:$IMAGE_TAG
+          
