@@ -11,7 +11,10 @@ jobs:
       id-token: write
       contents: read
     runs-on: ubuntu-latest
-    inputs:
+    parameters:
+      Description: 
+      Type: String|Number|CommaDelimitedList
+      Default: -:
       ERC_REPOSITORY:
         description: 'ERC Repository'
         type: string
