@@ -2,7 +2,6 @@
 FROM python:3.8
 # Install the necessary libraries
 #RUN pip install boto3 pillow
-# Install the necessary libraries
 # Copy the Python script and the configuration file to the container
 COPY ./app/transform_image.py /app/
 # Establish the work board
