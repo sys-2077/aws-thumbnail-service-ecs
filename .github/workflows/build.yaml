@@ -5,11 +5,10 @@ on:
     branches:
       - dev
 jobs:
-  env:
-    PROJECT_NAME: aws-thumbnail-service-2
-    
   aws_cdk:
     name: AWS CDK
+    env:
+      PROJECT_NAME: aws-thumbnail-service-2
     permissions:
       id-token: write
       contents: read
@@ -43,15 +42,15 @@ jobs:
       - name: Build and Push Image
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 \
-            --push -t ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/aws-thumbnail-service-2:latest \
+            --push -t ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/$PROJECT_NAME:latest \
             --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} \
-            --build-arg INPUT_BUCKET_NAME=${{ secrets.INPUT_BUCKET_NAME }} \
+            --build-arg OUTPUT_BUCKET_NAME=${{ secrets.OUTPUT_BUCKET_NAME }} \
             --build-arg AWS_REGION=${{ secrets.AWS_REGION }} -f ./Docker/Dockerfile .
       # Describe ECR Images
       - name: Describe ECR Images
         run: |
-          aws ecr describe-images --repository-name aws-thumbnail-service-2 --region ${{secrets.AWS_REGION}} --image-ids imageDigest=$(aws ecr list-images \
+          aws ecr describe-images --repository-name $PROJECT_NAME --region ${{secrets.AWS_REGION}} --image-ids imageDigest=$(aws ecr list-images \
           --repository-name aws-thumbnail-service-2 --region ${{secrets.AWS_REGION}} --query 'imageIds[?imageTag==`latest`]' --output json | jq -r '.[0].imageDigest')
 
