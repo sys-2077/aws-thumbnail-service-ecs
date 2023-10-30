@@ -66,20 +66,32 @@ Resources:
             - !Ref Subnet2
       TaskDefinition: !Ref TaskDefinition
   
-  SecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: !Sub ${ProjectName}-security-group
-      VpcId: vpc-074c061826ffff5e4
-  
+  VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: 10.1.0.0/16
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        Tags:
+        - Key: Name
+          Value:  !Join ['', [!Ref "AWS::StackName", "-VPC" ]]
+
   Subnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: vpc-074c061826ffff5e4
-      CidrBlock: 172.31.81/24
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      CidrBlock: 10.1.1.0/24
 
   Subnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: vpc-074c061826ffff5e4
-      CidrBlock: 172.31.82/24
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs ]
+      CidrBlock: 10.1.2.0/24
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ProjectName}-security-group
+      VpcId: !Ref VPC
