@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for ECS Fargate service
+  
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Name of the input bucket
+  AwsAccountId:
+    Type: String
+    Description: AWS Account ID
+  Region:
+    Type: String
+    Description: AWS Region
+
+Resources:
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub ${ProjectName}-cluster
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub ${ProjectName}-task
+      Architecture: x86_64
+      Cpu: 256
+      Memory: 512
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn: !Sub arn:aws:iam::${AwsAccountId}:role/gh-actions-role
+      TaskRoleArn: !Sub arn:aws:iam::${AwsAccountId}:role/gh-actions-role
+      ContainerDefinitions:
+        - Name: !Sub ${ProjectName}
+          Image: !Sub ${AwsAccountId}.dkr.ecr.${Region}.amazonaws.com/${ProjectName}:latest
+          PortMappings:
+            - ContainerPort: 80
+              HostPort: 80
+              Protocol: tcp
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Sub ${ProjectName}-container
+  
+  Task:
+    Type: AWS::ECS::Task
+    DependsOn: TaskDefinition
+    Properties:
+      Cluster: !Ref Cluster
+      TaskDefinition: !Ref TaskDefinition
+      LaunchType: FARGATE
