@@ -18,6 +18,12 @@ Resources:
     Properties:
       ClusterName: !Sub ${ProjectName}-cluster
 
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub ${ProjectName}-log-group
+      RetentionInDays: 7
+      
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -41,7 +47,7 @@ Resources:
             LogDriver: awslogs
             Options:
               awslogs-group: !Ref LogGroup
-              awslogs-region: !Ref AWS::Region
+              awslogs-region: !Ref ${Region}
               awslogs-stream-prefix: !Sub ${ProjectName}-container
   
   Task:
