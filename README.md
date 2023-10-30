@@ -1,6 +1,6 @@
 # CI/CD Pipeline for Amazon ECS with GitHub Actions
 
-![GitHub Actions Status](https://github.com/sys-2027/aws-thumbnail-service-1/workflows/CI%2FCD%20Pipeline/badge.svg)
+![GitHub Actions Status](https://github.com/sys-2027/aws-thumbnail-service-1/workflows/dev/badge.svg)](https://github.com/sys-2027/aws-thumbnail-service-1/actions?query=workflow%3Atest)
 
 This repository contains a sample CI/CD pipeline for deploying a containerized application to Amazon Elastic Container Service (ECS) using GitHub Actions. The pipeline automates the build and deployment process for your application, making it easy to manage and release new versions.
 
