@@ -55,7 +55,7 @@ jobs:
           aws ecr describe-images --repository-name $PROJECT_NAME --region ${{secrets.AWS_REGION}} --image-ids imageDigest=$(aws ecr list-images \
           --repository-name $PROJECT_NAME --region ${{secrets.AWS_REGION}} --query 'imageIds[?imageTag==`latest`]' --output json | jq -r '.[0].imageDigest')
   ComponentsS3:
-    name: AWS Components ECS, ECR, S3
+    name: AWS Components S3
     env:
       PROJECT_NAME: aws-thumbnail-service-2
     permissions:
@@ -73,5 +73,5 @@ jobs:
         
     - name: Cloudformation S3 Buckets
       run: aws cloudformation create-stack --stack-name MyS3BucketsStack \
-        --template-body file://./Infraestructure/s3-stack.yaml --region ${{ secrets.AWS_REGION }}
+        --template-body ./Infraestructure/s3-stack.yaml --region ${{ secrets.AWS_REGION }}
         --parameters ProjectName=$PROJECT_NAME
