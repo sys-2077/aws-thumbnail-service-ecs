@@ -62,19 +62,10 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/gh-actions-role
-          aws-region: us-east-1
-          mask-aws-account-id: true
-      - name: Input S3 Bucket
-        run: aws s3 mb s3://$PROJECT_NAME-input-bucket-1
-
-      - name: Output S3 Bucket
-        run: aws s3 mb s3://$PROJECT_NAME-output-bucket-1
-
-
+    - name: Checkout del Repositorio
+      uses: actions/checkout@v3
+        
+    - name: Crear Stacks de CloudFormation
+      run: aws cloudformation create-stack --stack-name MyS3BucketsStack \
+        --template-body file://Infraestructure/s3-stack.yaml --region ${{ secrets.AWS_REGION }} \
+        --access-key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret-key ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
