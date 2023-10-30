@@ -5,8 +5,8 @@ on:
     branches:
       - dev
 jobs:
-  aws_cdk:
-    name: AWS CDK
+  Build:
+    name: Github Actions Build
     env:
       PROJECT_NAME: aws-thumbnail-service-2
     permissions:
