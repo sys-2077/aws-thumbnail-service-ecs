@@ -74,30 +74,30 @@ jobs:
     - name: Cloudformation S3 Buckets
       working-directory: ./Infrastructure
       run: aws cloudformation create-stack --stack-name MyS3BucketsStack --template-body file://s3-stack.yaml --region ${{ secrets.AWS_REGION }} --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME
-    
+
+  Fargate:
+    name: AWS Fargate Service
+    env:
+      PROJECT_NAME: aws-thumbnail-service-2
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+    - name: Checkout del Repositorio
+      uses: actions/checkout@v3
+
+    - name: AWS CLI Configure
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
     - name: Upload Images
       working-directory: ./images
       run: |
         aws s3 cp . s3://$PROJECT_NAME-input-bucket/ --recursive --region ${{ secrets.AWS_REGION }}
 
-  Fargate:
-      name: AWS Fargate Service
-      env:
-        PROJECT_NAME: aws-thumbnail-service-2
-      permissions:
-        id-token: write
-        contents: read
-      runs-on: ubuntu-latest
-      needs: Build
-      steps:
-      - name: Checkout del Repositorio
-        uses: actions/checkout@v3
-
-      - name: AWS CLI Configure
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          
-      - name: Cloudformation Fargate Service
-        working-directory: ./Infrastructure
-        run: aws cloudformation create-stack --stack-name MyFargateStack --template-body file://ecs-fargate-stack.yaml --region ${{ secrets.AWS_REGION }} --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME ParameterKey=AwsAccountId,ParameterValue=${{secrets.AWS_ACCOUNT_ID}} ParameterKey=Region,ParameterValue=${{ secrets.AWS_REGION}}
+    - name: Cloudformation Fargate Service
+      working-directory: ./Infrastructure
+      run: aws cloudformation create-stack --stack-name MyFargateStack --template-body file://ecs-fargate-stack.yaml --region ${{ secrets.AWS_REGION }} --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME ParameterKey=AwsAccountId,ParameterValue=${{secrets.AWS_ACCOUNT_ID}} ParameterKey=Region,ParameterValue=${{ secrets.AWS_REGION}}
