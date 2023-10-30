@@ -96,4 +96,4 @@ jobs:
           
       - name: Cloudformation Fargate Service
         working-directory: ./Infrastructure
-        run: aws cloudformation create-stack --stack-name MyFargateStack --template-body file://ecs-fargate-stack.yaml --region ${{ secrets.AWS_REGION }} --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME ParameterKey=AwsAccountID,ParameterValue=$AWS_ACCOUNT_ID ParameterKey=Region,ParameterValue=$AWS_REGION
+        run: aws cloudformation create-stack --stack-name MyFargateStack --template-body file://ecs-fargate-stack.yaml --region ${{ secrets.AWS_REGION }} --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME ParameterKey=AwsAccountID,ParameterValue=$AWS_ACCOUNT_ID ParameterKey=Region,ParameterValue=${{ secrets.AWS_REGION}}
