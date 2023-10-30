@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - dev
+      - main
 jobs:
   Build:
     name: Github Actions Build
@@ -75,6 +75,11 @@ jobs:
     - name: Cloudformation S3 Buckets
       working-directory: ./Infrastructure
       run: aws cloudformation create-stack --stack-name MyS3BucketsStack --template-body file://s3-stack.yaml --region ${{ secrets.AWS_REGION }} --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME
+    
+    - name: Upload Images
+      working-directory: ./Images
+      run: |
+        aws s3 cp s3://$PROJECT_NAME-input-bucket/ --recursive
 
   Fargate:
       name: AWS Fargate Service
