@@ -28,7 +28,6 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub ${ProjectName}-task
-      Architecture: x86_64
       Cpu: 256
       Memory: 512
       NetworkMode: awsvpc
