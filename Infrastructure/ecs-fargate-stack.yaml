@@ -76,10 +76,10 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: vpc-074c061826ffff5e4
-      CidrBlock: 10.10.1.0/24
+      CidrBlock: 172.31.81/24
 
   Subnet2:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: vpc-074c061826ffff5e4
-      CidrBlock: 10.10.2.0/24
+      CidrBlock: 172.31.82/24
