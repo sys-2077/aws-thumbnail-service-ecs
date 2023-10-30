@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template for S3 Buckets
-
+  
 Parameters:
   ProjectName:
     Type: String
@@ -10,7 +10,7 @@ Resources:
   MyInputBucket: # 1 S3 bucket for the input files
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ProjectName-input-bucket-1
+      BucketName: !Sub ${ProjectName}-input-bucket
       AccessControl: Private
       LifecycleConfiguration:
         Rules:
@@ -20,7 +20,7 @@ Resources:
   MyOutputBucket: # 1 S3 bucket for the output files
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ProjectName-output-bucket-2
+      BucketName: !Sub ${ProjectName}-output-bucket
       AccessControl: Private
       LifecycleConfiguration:
         Rules:
