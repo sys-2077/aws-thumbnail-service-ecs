@@ -12,7 +12,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    runs-on: ubuntu-latest   
+    runs-on: ubuntu-latest
+    needs: ComponentsS3
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -53,7 +54,7 @@ jobs:
         run: |
           aws ecr describe-images --repository-name $PROJECT_NAME --region ${{secrets.AWS_REGION}} --image-ids imageDigest=$(aws ecr list-images \
           --repository-name $PROJECT_NAME --region ${{secrets.AWS_REGION}} --query 'imageIds[?imageTag==`latest`]' --output json | jq -r '.[0].imageDigest')
-  Components:
+  ComponentsS3:
     name: AWS Components ECS, ECR, S3
     env:
       PROJECT_NAME: aws-thumbnail-service-2
@@ -68,4 +69,4 @@ jobs:
     - name: Crear Stacks de CloudFormation
       run: aws cloudformation create-stack --stack-name MyS3BucketsStack \
         --template-body file://Infraestructure/s3-stack.yaml --region ${{ secrets.AWS_REGION }} \
-        --access-key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret-key ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+        --access-key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret-key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
