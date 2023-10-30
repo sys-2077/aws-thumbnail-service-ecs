@@ -77,11 +77,9 @@ Resources:
     Properties:
       VpcId: vpc-074c061826ffff5e4
       CidrBlock: 10.0.1.0/24
-      AvailabilityZone: !Select [0, !GetAZs !Ref "AWS::Region"]
 
   Subnet2:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: vpc-074c061826ffff5e4
-      CidrBlock: 10.0.2.0/24 
-      AvailabilityZone: !Select [1, !GetAZs !Ref "AWS::Region"]
+      CidrBlock: 10.0.2.0/24
