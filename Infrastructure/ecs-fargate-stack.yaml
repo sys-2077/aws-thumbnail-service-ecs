@@ -49,11 +49,3 @@ Resources:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Sub ${Region}
               awslogs-stream-prefix: !Sub ${ProjectName}-container
-  
-  Task:
-    Type: AWS::ECS::Task
-    DependsOn: TaskDefinition
-    Properties:
-      Cluster: !Ref Cluster
-      TaskDefinition: !Ref TaskDefinition
-      LaunchType: FARGATE
