@@ -47,7 +47,7 @@ Resources:
             LogDriver: awslogs
             Options:
               awslogs-group: !Ref LogGroup
-              awslogs-region: !Ref ${Region}
+              awslogs-region: us-east-1
               awslogs-stream-prefix: !Sub ${ProjectName}-container
   
   Task:
