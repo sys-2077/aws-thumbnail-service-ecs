@@ -48,3 +48,40 @@ Resources:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Sub ${Region}
               awslogs-stream-prefix: !Sub ${ProjectName}-container
+
+  Service:
+    Type: AWS::ECS::Service
+    DependsOn: TaskDefinition
+    Properties:
+      Cluster: !Ref Cluster
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref SecurityGroup
+          Subnets:
+            - !Ref Subnet1
+            - !Ref Subnet2
+      TaskDefinition: !Ref TaskDefinition
+  
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ProjectName}-security-group
+      VpcId: vpc-074c061826ffff5e4
+  
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: vpc-074c061826ffff5e4
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs !Ref "AWS::Region"]
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: vpc-074c061826ffff5e4
+      CidrBlock: 10.0.2.0/24 
+      AvailabilityZone: !Select [1, !GetAZs !Ref "AWS::Region"]
