@@ -73,6 +73,4 @@ jobs:
         
     - name: Cloudformation S3 Buckets
       working-directory: ./Infrastructure
-      run: aws cloudformation create-stack --stack-name MyS3BucketsStack \
-        --template-body file://s3-stack.yaml --region ${{ secrets.AWS_REGION }} \
-        --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME
+      run: aws cloudformation create-stack --stack-name MyS3BucketsStack --template-body file://s3-stack.yaml --region ${{ secrets.AWS_REGION }} --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME
