@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for S3 Buckets
+
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Name of the input bucket
+
+Resources:
+  MyInputBucket: # 1 S3 bucket for the input files
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ProjectName-input-bucket
+      AccessControl: Private
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteAllObjects
+            Status: Enabled
+            ExpirationInDays: 1
+  MyOutputBucket: # 1 S3 bucket for the output files
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ProjectName-output-bucket
+      AccessControl: Private
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteAllObjects
+            Status: Enabled
+            ExpirationInDays: 1
