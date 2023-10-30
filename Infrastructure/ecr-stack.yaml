@@ -5,7 +5,7 @@ Parameters:
   Repository:
     Type: String
     Description: Name of the repository
-  ImageTag:
+  IMAGE_TAG:
     Type: String
     Description: Tag of the Docker image
 
@@ -14,7 +14,8 @@ Resources:
   MyECRRepository: # 1 ECR repository for the Docker image
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: !Ref ${Repository}:${ImageTag}
+      Region: !Ref AWS_DEFAULT_REGION
+      RepositoryName: !Ref ${Repository}:${IMAGE_TAG}
       ImageTagMutability: MUTABLE
       ImageScanningConfiguration:
         ScanOnPush: true

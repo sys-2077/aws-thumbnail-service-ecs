@@ -1,0 +1,97 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for ECS Fargate service
+  
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Name of the input bucket
+  AwsAccountId:
+    Type: String
+    Description: AWS Account ID
+  Region:
+    Type: String
+    Description: AWS Region
+
+Resources:
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub ${ProjectName}-cluster
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub ${ProjectName}-log-group
+      RetentionInDays: 7
+      
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub ${ProjectName}-task
+      Cpu: 256
+      Memory: 512
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn: !Sub arn:aws:iam::${AwsAccountId}:role/gh-actions-role
+      TaskRoleArn: !Sub arn:aws:iam::${AwsAccountId}:role/gh-actions-role
+      ContainerDefinitions:
+        - Name: !Sub ${ProjectName}
+          Image: !Sub ${AwsAccountId}.dkr.ecr.${Region}.amazonaws.com/${ProjectName}:latest
+          PortMappings:
+            - ContainerPort: 80
+              HostPort: 80
+              Protocol: tcp
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Sub ${Region}
+              awslogs-stream-prefix: !Sub ${ProjectName}-container
+
+  Service:
+    Type: AWS::ECS::Service
+    DependsOn: TaskDefinition
+    Properties:
+      Cluster: !Ref Cluster
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref SecurityGroup
+          Subnets:
+            - !Ref Subnet1
+            - !Ref Subnet2
+      TaskDefinition: !Ref TaskDefinition
+  
+  VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: 10.1.0.0/16
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        Tags:
+        - Key: Name
+          Value:  !Join ['', [!Ref "AWS::StackName", "-VPC" ]]
+
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      CidrBlock: 10.1.1.0/24
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs ]
+      CidrBlock: 10.1.2.0/24
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ProjectName}-security-group
+      VpcId: !Ref VPC
