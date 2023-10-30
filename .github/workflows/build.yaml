@@ -78,7 +78,7 @@ jobs:
     - name: Upload Images
       working-directory: ./images
       run: |
-        aws s3 cp s3://$PROJECT_NAME-input-bucket/ --recursive
+        aws s3 cp . s3://$PROJECT_NAME-input-bucket/ --recursive
 
   Fargate:
       name: AWS Fargate Service
