@@ -10,7 +10,7 @@ Resources:
   MyInputBucket: # 1 S3 bucket for the input files
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ProjectName-input-bucket
+      BucketName: !Sub ProjectName-input-bucket-1
       AccessControl: Private
       LifecycleConfiguration:
         Rules:
@@ -20,7 +20,7 @@ Resources:
   MyOutputBucket: # 1 S3 bucket for the output files
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ProjectName-output-bucket
+      BucketName: !Sub ProjectName-output-bucket-2
       AccessControl: Private
       LifecycleConfiguration:
         Rules:
