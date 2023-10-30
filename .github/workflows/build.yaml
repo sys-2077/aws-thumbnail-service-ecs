@@ -75,4 +75,4 @@ jobs:
       working-directory: ./Infrastructure
       run: aws cloudformation create-stack --stack-name MyS3BucketsStack \
         --template-body file://s3-stack.yaml --region ${{ secrets.AWS_REGION }} \
-        --parameters ProjectName=$PROJECT_NAME
+        --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME
