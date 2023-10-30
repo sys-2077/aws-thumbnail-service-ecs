@@ -61,7 +61,7 @@ jobs:
       id-token: write
       contents: read
     runs-on: ubuntu-latest
-    needs: Buiild
+    needs: Build
     steps:
     - name: Checkout del Repositorio
       uses: actions/checkout@v3
