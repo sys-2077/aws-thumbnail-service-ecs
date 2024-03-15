@@ -54,6 +54,3 @@ The GitHub Actions workflow is defined in the `.github/workflows/deploy.yml` fil
 
 You can monitor the progress of your CI/CD pipeline through the GitHub Actions interface. Additionally, you can access ECS logs and CloudWatch logs for troubleshooting and debugging.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
