@@ -16,7 +16,7 @@ jobs:
     needs: UpladImage
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Configure AWS credentials 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout del Repositorio
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: AWS CLI Configure
       run: |
@@ -86,7 +86,7 @@ jobs:
     needs: S3Bucket
     steps:
     - name: Checkout del Repositorio
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: AWS CLI Configure
       run: |
@@ -99,7 +99,7 @@ jobs:
         aws s3 cp . s3://$PROJECT_NAME-input-bucket/ --recursive --region ${{ secrets.AWS_REGION }}        
 
   Fargate:
-    name: AWS Fargate Service
+    name: AWS Container Service
     env:
       PROJECT_NAME: aws-thumbnail-service-2
     permissions:
@@ -109,7 +109,7 @@ jobs:
     needs: Build
     steps:
     - name: Checkout del Repositorio
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: AWS CLI Configure
       run: |
